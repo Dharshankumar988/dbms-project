@@ -1,0 +1,218 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Rent Your Dream Ride</h1>
+        <p>Explore our wide range of cars and bikes for your next adventure</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('vehicles') }}?type=car" class="btn btn-primary">Rent a Car</a>
+            <a href="{{ url_for('vehicles') }}?type=bike" class="btn btn-secondary">Rent a Bike</a>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <i class="fas fa-car"></i>
+                <h3>Wide Selection</h3>
+                <p>Choose from our extensive fleet of cars and bikes to suit your needs</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-dollar-sign"></i>
+                <h3>Best Prices</h3>
+                <p>Competitive pricing with no hidden charges</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Our customer support team is always ready to assist you</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Safe & Secure</h3>
+                <p>All our vehicles are regularly maintained and sanitized</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-vehicles">
+    <div class="container">
+        <h2 class="section-title">Featured Vehicles</h2>
+        <div class="vehicle-cards">
+            {% for vehicle in vehicles %}
+            <div class="vehicle-card">
+                <div class="vehicle-image">
+                    <img src="{{ vehicle.image_url }}" alt="{{ vehicle.name }}">
+                    <div class="vehicle-type">{{ vehicle.type }}</div>
+                </div>
+                <div class="vehicle-details">
+                    <h3>{{ vehicle.name }}</h3>
+                    <p class="vehicle-model">{{ vehicle.model }} ({{ vehicle.year }})</p>
+                    <div class="vehicle-price">₹{{ vehicle.price_per_day }} / day</div>
+                    <a href="{{ url_for('vehicle_detail', id=vehicle.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="view-all">
+            <a href="{{ url_for('vehicles') }}" class="btn btn-secondary">View All Vehicles</a>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-icon"><i class="fas fa-search"></i></div>
+                <h3>Find Your Vehicle</h3>
+                <p>Browse our collection and choose your perfect ride</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-icon"><i class="fas fa-calendar-alt"></i></div>
+                <h3>Make a Reservation</h3>
+                <p>Select your dates and complete the booking</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-icon"><i class="fas fa-key"></i></div>
+                <h3>Get Your Keys</h3>
+                <p>Pick up your vehicle from our convenient locations</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-icon"><i class="fas fa-road"></i></div>
+                <h3>Enjoy Your Ride</h3>
+                <p>Hit the road and create unforgettable memories</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <div class="container">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <div class="testimonial-slider">
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"The service was excellent! The car was in perfect condition and the rental process was smooth."</p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user1.jpg') }}" alt="John Doe">
+                    <div class="author-info">
+                        <h4>John Doe</h4>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"I rented a bike for my weekend trip and it was a fantastic experience. Will definitely use their service again!"</p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user2.jpg') }}" alt="Jane Smith">
+                    <div class="author-info">
+                        <h4>Jane Smith</h4>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial">
+                <div class="testimonial-content">
+                    <p>"Great prices and even better customer service. The staff was very helpful and accommodating."</p>
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user3.jpg') }}" alt="Mike Johnson">
+                    <div class="author-info">
+                        <h4>Mike Johnson</h4>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="testimonial-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Ready to Hit the Road?</h2>
+            <p>Book your vehicle now and get the best deals!</p>
+            <a href="{{ url_for('vehicles') }}" class="btn btn-primary">Browse Vehicles</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Testimonial slider
+    const testimonials = document.querySelectorAll('.testimonial');
+    const dots = document.querySelectorAll('.dot');
+    let currentTestimonial = 0;
+
+    function showTestimonial(index) {
+        testimonials.forEach(testimonial => {
+            testimonial.style.display = 'none';
+        });
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        
+        testimonials[index].style.display = 'block';
+        dots[index].classList.add('active');
+    }
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentTestimonial = index;
+            showTestimonial(currentTestimonial);
+        });
+    });
+
+    // Auto slide
+    function autoSlide() {
+        currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+        showTestimonial(currentTestimonial);
+    }
+
+    // Initial display
+    showTestimonial(currentTestimonial);
+    
+    // Set interval for auto slide
+    setInterval(autoSlide, 5000);
+</script>
+{% endblock %}
