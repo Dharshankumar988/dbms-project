@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>My Dashboard</h1>
+        <p>Manage your bookings and account information</p>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="container">
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" data-tab="bookings">My Bookings</button>
+            <button class="tab-btn" data-tab="profile">Profile</button>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="tab-content active" id="bookings-tab">
+                <h2>My Bookings</h2>
+                
+                {% if bookings %}
+                <div class="bookings-list">
+                    {% for booking in bookings %}
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div class="booking-id">Booking #{{ booking.id }}</div>
+                            <div class="booking-status {{ booking.status }}">{{ booking.status|capitalize }}</div>
+                        </div>
+                        
+                        <div class="booking-details">
+                            <div class="vehicle-info">
+                                <img src="{{ booking.vehicle.image_url }}" alt="{{ booking.vehicle.name }}">
+                                <div class="vehicle-details">
+                                    <h3>{{ booking.vehicle.name }}</h3>
+                                    <p>{{ booking.vehicle.model }} ({{ booking.vehicle.year }})</p>
+                                </div>
+                            </div>
+                            
+                            <div class="booking-info">
+                                <div class="info-item">
+                                    <span class="label">Start Date:</span>
+                                    <span class="value">{{ booking.start_date.strftime('%d %b, %Y') }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">End Date:</span>
+                                    <span class="value">{{ booking.end_date.strftime('%d %b, %Y') }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Total Price:</span>
+                                    <span class="value">₹{{ booking.total_price }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Booked On:</span>
+                                    <span class="value">{{ booking.created_at.strftime('%d %b, %Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                        <div class="booking-actions">
+                            <form action="{{ url_for('cancel_booking', booking_id=booking.id) }}" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <button type="submit" class="btn btn-danger btn-sm">Cancel Booking</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="no-bookings">
+                    <p>You don't have any bookings yet.</p>
+                    <a href="{{ url_for('vehicles') }}" class="btn btn-primary">Browse Vehicles</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-content" id="profile-tab">
+                <h2>My Profile</h2>
+                
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h3>{{ user.name }}</h3>
+                            <p>{{ user.email }}</p>
+                            <p class="user-role">
+                                <span class="role {% if user.is_admin %}admin{% else %}user{% endif %}">
+                                    {% if user.is_admin %}Admin{% else %}User{% endif %}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="info-group">
+                            <label>Name</label>
+                            <p>{{ user.name }}</p>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label>Email</label>
+                            <p>{{ user.email }}</p>
+                        </div>
+                        
+                        <div class="info-group">
+                            <label>Account Type</label>
+                            <p>{% if user.is_admin %}Administrator{% else %}Regular User{% endif %}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-primary">Edit Profile</a>
+                        <a href="{{ url_for('change_password') }}" class="btn btn-secondary">Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.dataset.tab;
+            
+            // Remove active class from all buttons and contents
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

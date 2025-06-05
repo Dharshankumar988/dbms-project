@@ -1,0 +1,95 @@
+{% extends 'layout.html' %}
+
+{% block title %}Edit Vehicle{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Edit Vehicle</h1>
+        <p>Update the details for {{ vehicle.name }}</p>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="container">
+        <div class="form-card">
+            <form action="{{ url_for('edit_vehicle', vehicle_id=vehicle.id) }}" method="post" class="vehicle-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Vehicle Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ vehicle.name }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="type">Vehicle Type</label>
+                        <select id="type" name="type" class="form-control" required>
+                            <option value="">Select Type</option>
+                            <option value="car" {% if vehicle.type == 'car' %}selected{% endif %}>Car</option>
+                            <option value="bike" {% if vehicle.type == 'bike' %}selected{% endif %}>Bike</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" id="model" name="model" class="form-control" value="{{ vehicle.model }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" id="year" name="year" class="form-control" value="{{ vehicle.year }}" required min="1900" max="2099">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price_per_day">Price Per Day (₹)</label>
+                        <input type="number" id="price_per_day" name="price_per_day" class="form-control" value="{{ vehicle.price_per_day }}" required min="0" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image_url">Image URL</label>
+                        <input type="url" id="image_url" name="image_url" class="form-control" value="{{ vehicle.image_url }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="is_available">Availability</label>
+                        <select id="is_available" name="is_available" class="form-control" required>
+                            <option value="True" {% if vehicle.is_available %}selected{% endif %}>Available</option>
+                            <option value="False" {% if not vehicle.is_available %}selected{% endif %}>Unavailable</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" class="form-control" rows="4">{{ vehicle.description }}</textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Vehicle</button>
+                    <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="vehicle-preview">
+            <h3>Current Image Preview</h3>
+            <div class="preview-image">
+                <img src="{{ vehicle.image_url }}" alt="{{ vehicle.name }}">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preview image when URL changes
+    const imageUrlInput = document.getElementById('image_url');
+    const previewImage = document.querySelector('.preview-image img');
+    
+    imageUrlInput.addEventListener('change', function() {
+        if (this.value) {
+            previewImage.src = this.value;
+        }
+    });
+</script>
+{% endblock %}

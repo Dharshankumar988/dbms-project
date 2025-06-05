@@ -1,0 +1,97 @@
+{% extends 'layout.html' %}
+
+{% block title %}Book {{ vehicle.name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Book Your Vehicle</h1>
+        <p>Complete the form below to book {{ vehicle.name }}</p>
+    </div>
+</section>
+
+<section class="booking-section">
+    <div class="container">
+        <div class="booking-grid">
+            <div class="vehicle-summary">
+                <div class="vehicle-image">
+                    <img src="{{ vehicle.image_url }}" alt="{{ vehicle.name }}">
+                </div>
+                <div class="vehicle-details">
+                    <h3>{{ vehicle.name }}</h3>
+                    <p class="vehicle-model">{{ vehicle.model }} ({{ vehicle.year }})</p>
+                    <div class="vehicle-price">₹{{ vehicle.price_per_day }} / day</div>
+                </div>
+            </div>
+            
+            <div class="booking-form">
+                <form action="{{ url_for('book_vehicle', vehicle_id=vehicle.id) }}" method="post">
+                    <div class="form-group">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="end_date">End Date</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" required>
+                    </div>
+                    
+                    <div class="price-calculation">
+                        <div class="price-row">
+                            <span>Daily Rate:</span>
+                            <span>₹{{ vehicle.price_per_day }}</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Number of Days:</span>
+                            <span id="num-days">0</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total Price:</span>
+                            <span id="total-price">₹0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('start_date').setAttribute('min', today);
+    document.getElementById('end_date').setAttribute('min', today);
+    
+    // Calculate price
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    const numDaysElement = document.getElementById('num-days');
+    const totalPriceElement = document.getElementById('total-price');
+    const pricePerDay = {{ vehicle.price_per_day|float }};
+    
+    function calculatePrice() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        
+        if (startDate && endDate && startDate <= endDate) {
+            const diffTime = Math.abs(endDate - startDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            numDaysElement.textContent = diffDays;
+            totalPriceElement.textContent = '₹' + (diffDays * pricePerDay).toFixed(2);
+        } else {
+            numDaysElement.textContent = '0';
+            totalPriceElement.textContent = '₹0.00';
+        }
+    }
+    
+    startDateInput.addEventListener('change', calculatePrice);
+    endDateInput.addEventListener('change', calculatePrice);
+</script>
+{% endblock %}

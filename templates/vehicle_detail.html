@@ -1,0 +1,75 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ vehicle.name }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>{{ vehicle.name }}</h1>
+        <p>{{ vehicle.model }} ({{ vehicle.year }})</p>
+    </div>
+</section>
+
+<section class="vehicle-detail">
+    <div class="container">
+        <div class="vehicle-detail-grid">
+            <div class="vehicle-images">
+                <div class="main-image">
+                    <img src="{{ vehicle.image_url }}" alt="{{ vehicle.name }}">
+                </div>
+                <div class="vehicle-type-badge">{{ vehicle.type }}</div>
+            </div>
+            <div class="vehicle-info">
+                <div class="vehicle-price-section">
+                    <div class="vehicle-price">₹{{ vehicle.price_per_day }}</div>
+                    <div class="price-label">per day</div>
+                </div>
+                
+                <div class="vehicle-specs">
+                    <h3>Specifications</h3>
+                    <ul class="specs-list">
+                        <li><i class="fas fa-calendar-alt"></i> <span>Year:</span> {{ vehicle.year }}</li>
+                        <li><i class="fas fa-car"></i> <span>Model:</span> {{ vehicle.model }}</li>
+                        <li><i class="fas fa-tag"></i> <span>Type:</span> {{ vehicle.type|capitalize }}</li>
+                        <li><i class="fas fa-check-circle"></i> <span>Status:</span> 
+                            {% if vehicle.is_available %}
+                                <span class="status available">Available</span>
+                            {% else %}
+                                <span class="status unavailable">Unavailable</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="vehicle-description">
+                    <h3>Description</h3>
+                    <p>{{ vehicle.description }}</p>
+                </div>
+                
+                {% if vehicle.is_available %}
+                <div class="booking-section">
+                    <a href="{{ url_for('book_vehicle', vehicle_id=vehicle.id) }}" class="btn btn-primary btn-block">Book Now</a>
+                </div>
+                {% else %}
+                <div class="booking-section">
+                    <button class="btn btn-secondary btn-block" disabled>Currently Unavailable</button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="related-vehicles">
+    <div class="container">
+        <h2 class="section-title">Similar Vehicles</h2>
+        <div class="vehicle-cards">
+            <!-- This would be populated with similar vehicles from the database -->
+            <!-- For now, we'll leave it as a placeholder -->
+            <div class="placeholder-message">
+                <p>Similar vehicles will be displayed here.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'layout.html' %}
+
+{% block title %}Vehicles{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <h1>Our Vehicles</h1>
+        <p>Find the perfect vehicle for your journey</p>
+    </div>
+</section>
+
+<section class="vehicles-section">
+    <div class="container">
+        <div class="filter-section">
+            <div class="filter-tabs">
+                <a href="{{ url_for('vehicles') }}" class="filter-tab {% if type == 'all' %}active{% endif %}">All</a>
+                <a href="{{ url_for('vehicles') }}?type=car" class="filter-tab {% if type == 'car' %}active{% endif %}">Cars</a>
+                <a href="{{ url_for('vehicles') }}?type=bike" class="filter-tab {% if type == 'bike' %}active{% endif %}">Bikes</a>
+            </div>
+            <div class="filter-options">
+                <div class="filter-group">
+                    <label for="sort">Sort By:</label>
+                    <select id="sort" class="filter-select">
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="name-asc">Name: A to Z</option>
+                        <option value="name-desc">Name: Z to A</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="vehicle-grid" id="vehicle-grid">
+            {% for vehicle in vehicles %}
+            <div class="vehicle-card" data-price="{{ vehicle.price_per_day }}" data-name="{{ vehicle.name }}">
+                <div class="vehicle-image">
+                    <img src="{{ vehicle.image_url }}" alt="{{ vehicle.name }}">
+                    <div class="vehicle-type">{{ vehicle.type }}</div>
+                </div>
+                <div class="vehicle-details">
+                    <h3>{{ vehicle.name }}</h3>
+                    <p class="vehicle-model">{{ vehicle.model }} ({{ vehicle.year }})</p>
+                    <div class="vehicle-price">₹{{ vehicle.price_per_day }} / day</div>
+                    <a href="{{ url_for('vehicle_detail', id=vehicle.id) }}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if not vehicles %}
+        <div class="no-vehicles">
+            <p>No vehicles found. Please try a different filter.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Sorting functionality
+    const sortSelect = document.getElementById('sort');
+    const vehicleGrid = document.getElementById('vehicle-grid');
+    const vehicleCards = Array.from(document.querySelectorAll('.vehicle-card'));
+
+    sortSelect.addEventListener('change', function() {
+        const sortValue = this.value;
+        
+        vehicleCards.sort((a, b) => {
+            if (sortValue === 'price-asc') {
+                return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+            } else if (sortValue === 'price-desc') {
+                return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+            } else if (sortValue === 'name-asc') {
+                return a.dataset.name.localeCompare(b.dataset.name);
+            } else if (sortValue === 'name-desc') {
+                return b.dataset.name.localeCompare(a.dataset.name);
+            }
+        });
+        
+        // Remove all current cards
+        vehicleCards.forEach(card => card.remove());
+        
+        // Append sorted cards
+        vehicleCards.forEach(card => vehicleGrid.appendChild(card));
+    });
+</script>
+{% endblock %}
